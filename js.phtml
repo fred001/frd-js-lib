@@ -1,0 +1,1604 @@
+GLOBAL_BASEURL="/";
+
+/*** Ajax ***/
+function request(request_url,params,callback)
+{
+  var params=params||{};
+
+  $.ajax({
+  type:'GET',
+    url:request_url,
+    data:params,
+    dataType:"json",
+    success:function(response){
+
+
+      if(response.error == 1)
+      {
+        error(response.error_msg);
+      }
+      else
+      {
+        if(callback) callback(response);
+      }
+
+    },
+
+    error:function(response){
+
+      error(response);
+    }
+
+});
+//if failed
+//
+//callback
+//if error
+//if success
+
+}
+
+function request_post(request_url,params,callback)
+{
+  var params=params||{};
+
+  $.ajax({
+  type:'POST',
+    url:request_url,
+    data:params,
+    dataType:"json",
+    success:function(response){
+
+
+      if(response.error == 1)
+      {
+        error(response.error_msg);
+      }
+      else
+      {
+        if(callback) callback(response);
+      }
+
+    },
+
+    error:function(response){
+
+      error(response);
+    }
+
+});
+//if failed
+//
+//callback
+//if error
+//if success
+
+}
+
+function error(data)
+{
+  alert('unknown error');
+  console.log("Error");
+  console.log(data);
+}
+
+/*** Template ***/
+
+function load_template(name,params,callback)
+{
+  request(Page._url_template,params,function(response){
+
+      Page._templates[name]=response.data;
+
+
+      if(callback) callback(response);
+
+  });
+}
+
+function get_template(name,params)
+{
+
+  if(Page._templates[name])
+  {
+    return Page._templates[name];
+  }
+  else
+  {
+    error("template not exists");
+  }
+}
+
+
+function url(path,params)
+{
+  if(path != false)
+  {
+    path=trim(path,"/");
+  }
+
+  path=GLOBAL_BASEURL+path;
+
+  query=http_build_query(params);
+
+  if(query == false)
+  {
+    return path;
+  }
+  else 
+  {
+    if(strpos(path,"?") !== false)
+    {
+      return path+"&"+query;
+    }
+    else
+    {
+      return path+"?"+query;
+    }
+  }
+}
+function get_evt_key(evt)
+{
+  return evt.key;
+}
+
+function reload_page()
+{
+  location.reload();
+}
+function today()
+{
+var date=new Date();
+var day=substr("00"+date.getDate(),-2);
+
+var today=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+day;
+
+  return today;
+}
+
+
+
+function Html(tag,attrs,text)
+{
+  var attr_str='';
+
+  // if is_array(attrs)
+  if(typeof attrs == 'object' )
+  {
+    for(var i in attrs)
+    {
+      attr_str+=' '+i+'='+'"'+attrs[i]+'"';
+    }
+  }
+
+  if(text)
+  {
+    //'<{tag} {attr_str}>{text}</{tag}>';
+    var html='<'+tag+' '+attr_str+'>'+text+'</'+tag+'>';
+  }
+  else
+  {
+    var html='<'+tag+' '+attr_str+'/>';
+  }
+
+  return html;
+}
+
+var Class={
+//>>>1/4 static attributes
+
+//<<<1/4 static attributes
+
+  create:function(){
+    //>>>2/4 create or inherit
+    var inherit={};
+    //<<<2/4 create or inherit
+
+    var obj=inherit;
+    var parent=this;
+    var self=obj;
+
+    //>>>3/4 static attribute operation
+    //this.count+=1;
+    //<<<3/4 static attribute operation
+
+    //>>>4/4 define object
+    obj=$.extend(obj,{
+
+      init:function(){
+      },
+    
+      //overwrite run method as construct
+      run:function(func){
+        func(self);
+      },
+
+
+
+    });
+    //<<<4/4 define object
+
+    obj.init();
+
+    return obj;
+  },
+
+  //create and modify
+  create2:function(func){
+    //>>>2/4 create or inherit
+    var inherit={};
+    //<<<2/4 create or inherit
+
+    var obj=inherit;
+    var parent=this;
+    var self=obj;
+
+    //>>>3/4 static attribute operation
+    //this.count+=1;
+    //<<<3/4 static attribute operation
+
+    //>>>4/4 define object
+    obj=$.extend(obj,{
+
+      init:function(){
+      },
+    
+      //overwrite run method as construct
+      run:function(func){
+        func(self);
+      },
+
+
+
+    });
+    //<<<4/4 define object
+
+    obj.init();
+    if(func) func(self);
+
+    return obj;
+  },
+
+};
+
+function extend(inherit,func_init)
+{
+var NewClass={
+//>>>1/4 static attributes
+
+//<<<1/4 static attributes
+
+  create:function(func){
+    //>>>2/4 create or inherit
+    //<<<2/4 create or inherit
+
+    var obj=inherit.create();
+    //var parent=this;
+    var self=obj;
+    self.parent=obj;
+
+    //>>>3/4 static attribute operation
+    //this.count+=1;
+    //<<<3/4 static attribute operation
+
+    //>>>4/4 define object
+
+    //<<<4/4 define object
+    if(func_init) func_init(self);
+
+
+    if(func) func(self);
+
+    //if(obj.init) obj.init();
+    if(obj.init) call_user_func_array(obj.init,arguments);
+
+    return obj;
+  },
+
+
+};
+
+return NewClass;
+}
+
+
+
+/*
+var o=Class.create();
+
+
+var o=Class.create2(function(self){
+  self.name="frd";
+  self.show=function(){
+    alert(self.name);
+  };
+});
+
+o.show();
+
+
+var O=Class.extend(Class,function(self){
+  self.name="frd";
+  self.show=function(){
+    alert(self.name);
+  };
+});
+var o=O.create();
+o.show();
+
+
+
+var O2=extend(O,function(self){
+  self.show=function(){
+    alert("hello "+self.name);
+  };
+});
+var o=O.create();
+o.show();
+
+*/
+
+
+var Callback=extend(Class,function(self){
+
+      self.params={};
+      self.names=[];
+      self.functions=[];
+
+      self.add=function(name,func){
+        this.names.push(name);
+        this.functions.push(func);
+
+      };
+
+      self.run=function(){
+        var func=this.functions[0];
+        func.__callback=self;
+        func();
+
+      };
+
+      self.call=function(name){
+
+      };
+
+      self.setParam=function(k,v){
+
+      };
+
+     self.getParam=function(k,default_value){
+
+      };
+
+
+});
+
+
+/*
+var callback=Callback.create();
+callback.add("main",show_confirm);
+callback.add("confirm_yes",confirm_yes);
+callback.add("confirm_no",confirm_no);
+
+callback.run();
+*/
+
+var Template=extend(Class,function(self){
+
+      self.vars=[];
+      self.t="";
+
+      self.init=function(name){
+
+        self.t=TEMPLATES[name];
+      };
+
+      self.set_var=function(k,v){
+        self.vars[k]=v;
+      };
+
+      self.get_vars=function(){
+        return self.vars;
+
+      };
+
+      self.render=function(){
+        var t=self.t;
+        for(k in self.vars)
+        {
+          v=self.vars[k];
+          k=k.toUpperCase();
+          t=t.replace(k,v);
+        }
+
+        return t;
+      };
+
+});
+
+
+
+
+
+
+/*** Page ***/
+var Page={
+  _templates:{},
+  _url_template:"/index.php/template",
+
+
+  _init_functions:[],
+
+  add_init:function(func){
+    this._init_functions.push(func);
+  },
+
+  init:function(){
+    for(var k in this._init_functions)
+    {
+      var func=this._init_functions[k];
+      func();
+    }
+
+    this._init_functions=[];
+  },
+
+};
+
+(function($) {
+  // Code goes here
+
+  $.fn.extend({
+  get2:function(data_id){
+
+  var element=this.find("[data-id="+data_id+"]");
+
+    if(element.length == 0)
+    {
+      throw "data-id="+data_id+" not exists";
+    }
+
+    return $(element[0]); //return first
+  }
+
+});
+
+})(jQuery);
+
+
+
+
+
+var Dialog=extend(Class,function(self){
+      var template=get_template('dialog');
+
+      self.html=$(template);
+      self.body=self.html.get2("body");
+      self.footer=self.html.get2("footer");
+
+      //add to page
+      $("body").append(self.html);
+      //calculate position (150 = 300/2)
+      var left=$(window).width()/2-150;
+      var top=$(window).height()/2-150;
+
+      self.html.css("left",left+"px")
+      self.html.css("top",top+"px")
+
+
+      self.body.set_html=self.body.html;
+      //self.footer.add_button
+      //self.footer.set_align
+
+      self.init=function(message){
+        self.body.html(message);
+      };
+
+      self.show=function(){
+
+        self.html.show();
+      };
+
+      self.close=function(){
+        self.html.hide();
+      };
+
+      self.loading=function(){
+        self.body.html('<strong>loading......</strong>');
+      };
+
+      self.add_button=function(name,label,style){
+
+        var html='<button class="btn '+style+'" data-id="'+name+'" type="button">'+label+'</button>';
+
+        self.footer.append(html);
+
+      };
+
+      self.bind_button=function(name,event,callback){
+
+            self.footer.get2(name).bind(event,callback);
+
+      };
+
+  
+
+    });
+
+var Alert=extend(Dialog,function(self){
+      self.body.html(message);
+
+      self.add_button("ok","OK","btn-primary");
+      self.footer.get2("ok").bind("click",self.close);
+});
+
+
+var Confirm=extend(Dialog,function(self){
+  self.init=function(message,callback){
+      self.body.html(message);
+
+      self.add_button("ok","OK","btn-primary");
+      self.add_button("cancel","Cancel","");
+
+      self.on_ok=function(){
+        if(callback) callback(self);
+      };
+
+      self.on_cancel=function(){
+        self.close();
+      };
+
+      self.footer.get2("ok").bind("click",self.on_ok);
+      self.footer.get2("cancel").bind("click",self.on_cancel);
+    };
+
+});
+
+
+
+    var Tree=extend(Class,function(self){
+
+
+      self.init=function(element){
+        self.element=element;
+        self.choosed=null;
+
+
+        self.element.find("label").click(function(){
+
+          if(self.choosed) self.choosed.removeClass("choosed");
+
+          self.choosed=$(this).parent("li:first");
+
+          //console.log(tree_choosed.attr("data-blog-id"));
+
+          var article_id=self.choosed.attr("data-blog-id");
+          $("#content").html(''); //clear old content
+
+          if( article_id) 
+          {
+            var params={
+            'user_id':USER_ID,
+              'name':'article_get',
+              'params':{'id':article_id},
+          };
+
+            request_post(url("api"),params,function(response){
+              $("#content").html(response.article.content);
+            });
+          }
+
+          self.choosed.addClass("choosed");
+        });
+
+
+        //bind  direction  event
+        $(document).keyup(function(evt){
+          //37 left,38 up,39 right,40 down
+
+          if(evt.which == 37)
+          {
+            self.choosed_move_left();
+          }
+          else if(evt.which == 38)
+          {
+            self.choosed_move_up();
+          }
+          else if(evt.which == 39)
+          {
+            self.choosed_move_right();
+          }
+          else if(evt.which == 40)
+          {
+            self.choosed_move_down();
+          }
+
+        });
+
+
+      };
+
+
+      self.add_as_next=function(){
+
+        var tree=self;
+
+        Dialog.create(function(self){
+
+          self.on_ok=function(){
+
+            var title=self.body.get2("title").val();
+
+            var tree_choosed=tree.get_choosed();
+            if(tree_choosed.hasClass("root"))
+            {
+              alert('root can not add next');
+              return ;
+            }
+
+            var html=$("<li><label>"+title+"</label></li>");
+
+            tree_choosed.after(html);
+
+            html.find("label").click(function(){
+
+              if(tree_choosed)
+              {
+                tree_choosed.removeClass("choosed");
+              }
+
+
+              tree_choosed=$(this).parent("li:first");
+              tree.set_choosed(tree_choosed);
+              tree_choosed.addClass("choosed");
+            });
+
+            self.close();
+          };
+
+          var html='<input data-id="title" type="text" placeholder="Title">';
+          self.body.html(html);
+
+          self.add_button("ok","OK");
+          self.add_button("cancel","Cancel");
+
+          self.footer.get2("cancel").bind("click",self.close);
+          self.footer.get2("ok").bind("click",self.on_ok);
+
+          //set focus
+          self.body.get2("title").focus();
+
+        });
+      };
+
+
+      self.add_as_child=function() {
+        var tree=self;
+
+
+        Dialog.create(function(self){
+
+          self.on_ok=function(){
+            var title=self.body.get2("title").val();
+            //alert(title);
+
+            var tree_choosed=tree.get_choosed();
+            var html=$("<li><label>"+title+"</label></li>");
+
+            var ul=tree_choosed.find("ol:first");
+
+            if(ul.length==0)
+            {
+              tree_choosed.append("<ol></ol>");
+            }
+
+            var ul=tree_choosed.find("ol:first");
+
+            ul.append(html);
+
+
+            html.find("label").click(function(){
+
+              var tree_choosed=tree.get_choosed();
+              if(tree_choosed)
+              {
+                tree_choosed.removeClass("choosed");
+              }
+
+
+              tree_choosed=$(this).parent("li:first");
+              tree.set_choosed(tree_choosed);
+              tree_choosed.addClass("choosed");
+            });
+
+            self.close();
+
+          };
+
+          var html='<input data-id="title" type="text" placeholder="Title">';
+          self.body.html(html);
+
+          self.add_button("ok","OK");
+          self.add_button("cancel","Cancel");
+
+          self.footer.get2("cancel").bind("click",self.close);
+          self.footer.get2("ok").bind("click",self.on_ok);
+
+
+          //set focus
+          self.body.get2("title").focus();
+
+
+
+        });
+
+      };
+
+
+      self.bind_article=function(){
+        var tree=self;
+
+
+        var modal=Dialog.create(function(self){
+          self.choosed_blog_id=false;
+
+          self.choose=function(){
+            var blog_id=$(this).attr("data-id");
+            self.choosed_blog_id=blog_id;
+
+            self.body.find("li").removeClass("list-group-item-success");
+            $(this).addClass("list-group-item-success");
+
+          };
+
+          self.highlight =function(){
+            $(this).addClass("list-group-item-info");
+          };
+
+          self.unhighlight =function(){
+            $(this).removeClass("list-group-item-info");
+          };
+
+          self.on_ok=function(){
+            //alert(self.choosed_blog_id);
+            var tree_choosed=tree.get_choosed();
+            tree_choosed.attr("data-blog-id",self.choosed_blog_id);
+
+            //render content
+            var params={
+            'user_id':USER_ID,
+              'name':'article_get',
+              'params':{'id':self.choosed_blog_id},
+            };
+
+            request_post(url("api"),params,function(response){
+              $("#content").html(response.article.content);
+            });
+
+
+
+            self.close();
+
+          };
+
+
+          var params={
+          'user_id':USER_ID,
+            'name':"article_list",
+            'params':{
+
+          },
+          };
+
+          request_post(url('api'),params,function(response){
+
+
+            var html=response.html;
+
+            self.body.css('text-align','left');
+            self.body.html(html);
+
+            self.add_button("ok","OK");
+            self.add_button("cancel","Cancel");
+
+            self.footer.get2("ok").bind("click",self.on_ok);
+            self.footer.get2("cancel").bind("click",self.close);
+
+            self.body.find("li").bind("click",self.choose);
+            self.body.find("li").bind("mouseover",self.highlight);
+            self.body.find("li").bind("mouseout",self.unhighlight);
+
+          });
+
+
+        });
+
+      };
+
+      self.save=function(){
+        var book_id=$("#tree").attr("data-book-id");
+        var root=$("#tree");
+        var ul=root.children("ol");
+
+        var li_list=ul.children("li");
+
+        var tree=[];
+        for(var i=0;i<li_list.length; i++)
+        {
+          var li=li_list[i];
+
+          var section=self.get_section($(li));
+
+          tree.push(section);
+        }
+
+        if(!tree)
+        {
+          alert('error');
+          return ;
+        }
+
+        //console.log(tree);
+
+        var request_url=url("api");
+        var params={
+        'user_id':USER_ID,
+          'name':'book_edit_content',
+          'params':{
+          'id':book_id,
+          'data':tree,
+
+        },
+
+        };
+
+
+        request_post(request_url,params,function(){
+            alert('succerss');
+
+        });
+
+        console.log(tree);
+      };
+
+      self.get_choosed=function(){
+        if(!self.choosed)
+        {
+          self.choosed=$("#tree");
+        }
+
+        return self.choosed;
+      };
+
+      self.set_choosed=function(choosed){
+        self.choosed=choosed;
+      };
+
+      self.choosed_move_up=function(){
+        if(self.choosed)
+        {
+          var prev=self.choosed.prev();
+          if(prev.length != 0)
+          {
+            prev.before(self.choosed);
+          }
+        }
+      };
+
+      self.choosed_move_down=function(){
+        if(self.choosed)
+        {
+          var next=self.choosed.next();
+          if(next.length != 0)
+          {
+            next.after(self.choosed);
+          }
+        }
+      };
+
+
+      self.choosed_move_left=function(){
+        if(self.choosed)
+        {
+          var parent=self.choosed.parent().parent("li:first");
+          console.log(parent);
+          if(parent.length != 0)
+          {
+            parent.after(self.choosed);
+          }
+        }
+      };
+
+      self.choosed_move_right=function(){
+        if(self.choosed)
+        {
+          var prev=self.choosed.prev();
+          if(prev.length != 0)
+          {
+            var ul=prev.find("ul:first");
+
+            if(ul.length==0)
+            {
+              prev.append("<ul></ul>");
+            }
+
+            var ul=prev.find("ul:first");
+
+            ul.append(self.choosed);
+          }
+        }
+      };
+
+      self.remove=function(){
+        if(self.choosed && self.choosed.attr("id") != "tree")
+        {
+          self.choosed.remove();
+        }
+      }
+
+
+      self.get_section=function(li){
+        var section={
+        'title':'',
+          'blog_id':'',
+          'children':[]
+      };
+
+        section.title=li.children("label").text();
+        var blog_id=li.attr('data-blog-id');
+        if(blog_id) section.blog_id=blog_id;
+
+        if(li.children("ol").length > 0)
+        {
+          var li_list=li.children("ol").children("li");
+          for(var i=0;i<li_list.length; i++)
+          {
+            var sub_li=li_list[i];
+
+            var sub_section=self.get_section($(sub_li));
+            section.children.push(sub_section);
+          }
+        }
+
+
+        return section;
+      }
+
+    });
+
+
+
+
+
+
+var FormField=extend(Class,function(self){
+      self.attrs={
+        'type':"text" , //"text, textarea, password ..."
+        'class':"form-control" 
+      };
+
+      self.tag="input";
+      self.label='';
+
+      self.setType=function(type){
+        if(type == "text")
+        {
+          self.tag="input";
+          self.set("type","text");
+        }
+        else if(type == "password")
+        {
+          self.tag="input";
+          self.set("type","password");
+        }
+        else if(type == "hidden")
+        {
+          self.tag="input";
+          self.set("type","hidden");
+        }
+        else if(type == "textarea")
+        {
+          self.tag="textarea";
+        }
+
+      };
+
+      self.setLabel=function(label){
+        self.label=label;
+
+      };
+
+      self.setName=function(name){
+      self.set("name",name);
+      self.set("data-id",name);
+
+      };
+
+      self.set=function(name,value){self.attrs[name]=value;};
+      self.get=function(name){return self.attrs[name];};
+
+    self.render=function(){
+          
+        
+
+      var html='<div class="form-group">'
+      +'<label class="col-sm-2 control-label">'+self.label+'</label>'
+      +'<div class="col-sm-10">'
+      +Html(self.tag,self.attrs)
+      +'</div>'
+      +'</div>';
+
+
+      return html;
+    };
+
+});
+
+var FormSelection=extend(FormField,function(self){
+    self.tag="select";
+      self.attrs={
+        'class':"form-control" 
+      };
+
+    self.options={};
+    self.default_option='';
+
+    self.add_option=function(value,label){
+      self.options[value]=label; 
+
+    };
+  
+    self.set_default=function(value){
+      self.default_option=value;
+
+    };
+
+    self.render=function(){
+
+      var option_html='';
+      for(var k in self.options)
+      {
+        if(k == self.default_option)
+        {
+          option_html+='<option selected value="'+k+'">'+self.options[k]+'</option>';
+        }
+        else
+        {
+         option_html+='<option value="'+k+'">'+self.options[k]+'</option>';
+        }
+      }
+
+
+      var field_html=Html(self.tag,self.attrs,option_html);
+
+      var html='<div class="form-group">' +'<label class="col-sm-2 control-label">'+self.label+'</label>'
+      +'<div class="col-sm-10">'
+      +field_html
+      +'</div>'
+      +'</div>';
+
+      return html;
+
+    };
+
+});
+
+var Form=extend(Class,function(self){
+  self.fields={};
+
+
+
+  self.add_field=function(name,label,type){
+      if(type == "select")
+      {
+        var field=FormSelection.create();
+      }
+      else
+      {
+        var field=FormField.create();
+      }
+
+      field.setType(type);
+      field.setLabel(label);
+      field.setName(name);
+      
+      self.fields[name]=field;
+
+  };
+
+  self.get_field=function(name){return self.fields[name];};
+
+  self.render=function(){
+      var html='<form data-id="form" class="form-horizontal">';
+
+      for(var i in self.fields)
+      {
+        html+=self.fields[i].render();
+      }
+        
+      html+"</form>";
+
+      return html;
+  };
+
+});
+
+
+function call_api(api_name,params,callback)
+{
+  params['_name']=api_name;
+  request_post(url("api"),params,callback);
+}
+
+
+//bind event on result
+var Table=extend(Class,function(self){
+
+  self.table=null;
+  self.trs=null;
+  self.tr_choosed=null;
+
+  self.run=function(table){
+    self.table=table;
+    if(self.table.length == 0)
+    {
+      alert('empty selector: '+selector); 
+    }
+
+    self.trs=self.table.find("tbody").find("tr");
+
+    self.bind_event();
+  };
+
+  self.active_tr=function(tr) {
+    tr.addClass("active");
+  };
+
+  self.unactive_tr=function(tr){
+    tr.removeClass("active");
+  };
+
+  self.highlight_tr=function(tr) {
+    tr.addClass("info");
+  };
+
+  self.unhighlight_tr=function(tr){
+    tr.removeClass("info");
+  };
+
+  self.get_choosed_tr=function(){
+    return self.trs.eq(self.choosed_tr_no);
+  };
+
+  self.bind_event=function(){
+
+    self.trs.mouseover(function(){
+      self.active_tr($(this));
+    });
+
+    self.trs.mouseout(function(){
+      self.unactive_tr($(this));
+    });
+
+    self.trs.click(function(){
+      var tr=$(this);
+      var tr_choosed=self.get_choosed();
+
+      if(tr_choosed)
+      {
+        if(tr_choosed != tr)
+        {
+          self.unhighlight_tr(tr_choosed);
+          self.highlight_tr(tr);
+          self.set_choosed(tr)
+        }
+        else
+        {
+          self.unhighlight_tr(tr_choosed);
+          self.set_choosed(null)
+        }
+
+      }
+      else
+      {
+        self.highlight_tr(tr);
+        self.set_choosed(tr)
+      }
+    });
+  };
+
+
+  self.set_choosed=function(tr){  self.tr_choosed=tr };
+  self.get_choosed=function(){  return self.tr_choosed };
+
+});
+
+/*
+var TreeId=Class.create();
+TreeId.run(function(self){
+  self.id=0;
+  self.generate_id=function(){
+    self.id++;
+    return self.id; 
+
+  };
+});
+*/
+
+var TreeId=Class.create(function(self){
+  self.id=0;
+  self.generate_id=function(){
+    self.id++;
+    return self.id; 
+
+  };
+});
+
+var Tree=extend(Class,function(self){
+  self.is_root=false;
+  self.attrs={};
+  self.children=[];
+
+  self.id=0;
+
+
+  self.set_is_root=function(is_root){ self.is_root= is_root };
+
+  self.set_id=function(id){self.set("id",id);};
+  self.get_id=function(id){return self.get("id");};
+
+  self.set=function(name,value){
+      self.attrs[name]=value;
+  };
+
+  self.init=function(){ self.set_id(TreeId.generate_id());};
+
+  self.get=function(name,default_value){
+      if( self.attrs[name])
+      {
+        return self.attrs[name];
+      }
+      else
+      {
+        return default_value;
+      }
+
+  };
+
+  
+  self.insert_child=function(child,position){
+    if(position)
+    {
+        child.set_id(TreeId.generate_id());
+
+
+        //splice(0,0,child)  //插入到首位
+        //splice(1,0,child)  //插入到第二个位置
+        //splice(-1,0,child) //插入到倒数第二个位置
+        //array.push(child)  //插入到倒数第一个位置 （似乎无法用splice实现)
+
+        self.children.splice(position,0,child);
+    }
+    else
+    {
+      self.children.push(child);
+    }
+  };
+
+  self.add_child=function(tree){
+    tree.set_id(TreeId.generate_id());
+
+    self.children.push(tree);
+  };
+
+  self.remove_child=function(tree_id){
+      for(var i in self.children)
+      {
+        var id=self.children[i].get("id");
+        if( id == tree_id)
+        {
+          return self.children[i];
+        }
+      }
+
+      return false;
+  };
+
+  self.get_child=function(tree_id){
+
+  };
+  self.has_child=function(){
+
+    if(self.children.length )
+       return true;
+    else
+      return false;
+  };
+
+  self.get_children=function(){ return self.children};
+
+});
+
+
+var TreeUI=extend(Class,function(self){
+  self.choosed={
+    'li':null,
+    'label':null  , //default
+    'parent':null,
+    'previous':null,
+    'next':null,
+  };
+
+  self.set_choosed=function(node){ 
+
+      var li=$(node.parent("li:first")[0]);
+
+      self.choosed.li=li
+      self.choosed.label=node;
+
+      self.choosed.parent=li.parent("ol:first").parent("li:first");
+      self.choosed.child=li.find("ol>li:first");
+
+      self.choosed.prev=li.prev("li");
+      self.choosed.next=li.next("li");
+
+  };
+  self.get_choosed=function(node){ return self.choosed; };
+
+  self.create_node=function(attrs){
+    name=attrs['name'];
+    attrs['data-id']='name';
+    delete attrs['name'];
+    
+    return '<li>'+html('label',attrs,name)+'</li>';
+  };
+
+  self.create_node_label=function(attrs){
+    name=attrs['name'];
+    attrs['data-id']='name';
+    delete attrs['name'];
+    
+    return html('label',attrs,name);
+  };
+
+  self.insert_node=function(attrs){
+    var html=self.create_node(attrs);
+    self.get_choosed().li.append(html);
+
+  };
+
+  self.update_node=function(attrs){
+    var label=self.create_node_label(attrs);
+
+    var choosed=self.get_choosed();
+    choosed.label.replaceWith(label);
+
+  };
+
+  self.delete_node=function(){
+    self.get_choosed().li.remove();
+  };
+
+  self.choose_up=function(){
+    var choosed=self.get_choosed();
+    if(choosed.prev.length > 0)
+    {
+      self.set_choosed(choosed.prev.find("label:first"));
+      return true;
+    }
+    else if(choosed.parent.length > 0)  
+    {
+      self.set_choosed(choosed.parent.find("label:first"));
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  };
+
+  self.choose_down=function(){
+    var choosed=self.get_choosed();
+    if(choosed.next.length > 0)
+    {
+      self.set_choosed(choosed.next.find("label:first"));
+      return true;
+    }
+    else if(choosed.child.length > 0)  
+    {
+      self.set_choosed(choosed.child.find("label:first"));
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+
+  };
+  self.choose_left=function(){
+    var choosed=self.get_choosed();
+    if(choosed.parent.length > 0)  
+    {
+      self.set_choosed(choosed.parent.find("label:first"));
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+
+  };
+  self.choose_right=function(){
+    var choosed=self.get_choosed();
+    if(choosed.child.length > 0)
+    {
+      self.set_choosed(choosed.child.find("label:first"));
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+
+  };
+
+
+  self.move_left=function(){
+
+    var choosed=self.get_choosed();
+    if(choosed.parent.length > 0)
+    {
+      choosed.parent.after(choosed.li);
+      self.set_choosed(choosed.label);
+    }
+
+  };
+
+  self.move_right=function(){
+
+    var choosed=self.get_choosed();
+    if(choosed.prev.length > 0)
+    {
+      if(choosed.prev.find("ol").length == 0)
+      {
+        choosed.prev.append("<ol></ol>");
+      }
+
+      choosed.prev.find("ol").append(choosed.li);
+      self.set_choosed(choosed.label);
+    }
+
+  };
+  self.move_up=function(){
+    var choosed=self.get_choosed();
+    if(choosed.prev.length > 0)
+    {
+      choosed.prev.before(choosed.li);
+      self.set_choosed(choosed.label);
+    }
+
+
+  };
+  self.move_down=function(){
+
+    var choosed=self.get_choosed();
+    if(choosed.next.length > 0)
+    {
+      choosed.next.after(choosed.li);
+      self.set_choosed(choosed.label);
+    }
+
+  };
+
+
+
+  self.root_start=function(){return '<ol data-id="tree" data-is-root="true"  class="tree">'};
+  self.root_end=function(){return '</ol>';};
+
+  self.child_start=function(){return '<li>';};
+  self.child=function(tree){return '<label data-id="name">'+tree.get("name")+'</label>'; };
+  self.child_end=function(){return '</li>';};
+
+  self.children_start=function(){return '<ol>';};
+  self.children_end=function(){return '</ol>';};
+
+
+  self.render=function(tree){
+      var html='';
+
+      html+=self.root_start();
+      html+=self.render_child(tree);
+      html+=self.root_end();
+
+      return html;
+  };
+
+  self.render_child=function(tree){
+    var html='';
+
+    html+=self.child_start();
+    html+=self.child(tree);
+
+    if(tree.has_child())
+    {
+      html+=self.children_start();
+        
+      var children=tree.get_children();
+      for(var i in children)
+      {
+        html+=self.render_child(children[i]);
+      }
+
+
+      html+=self.children_end();
+    }
+    
+    html+=self.child_end();
+
+    return html;
+  };
+
+});
+
+var FrdUITheme=extend(Class,function(self){
+  self.setting={
+    'button.class':'btn',
+    'table.class':'table',
+
+  };
+
+  self.set=function(name,value){self.setting[name]=value;};
+  self.get=function(name){return self.setting[name]; };
+  
+
+});
+
+var FrdUI=extend(Class,function(self){
+  self.theme=null;
+
+
+  self.set_theme=function(theme){self.theme=theme;};
+  self.get_theme=function(){ return self.theme; };
+
+  //methods
+  self.html=function(tag,attrs,text){
+      if(text)
+      {
+        //'<{tag} {attr_str}>{text}</{tag}>';
+      }
+      else
+      {
+        //'<{tag} {attr_str}/>';
+      }
+
+  };
+
+  self.button=function(text,attrs){
+      attrs['class']=self.theme.get("button.class");
+
+      
+      var attr_str='';
+      for(var i in attrs)
+      {
+        attr_str+=' '+i+'='+'"'+attrs[i]+'"';
+      }
+
+      var html='<button'+attr_str+'>'+text+'</button>';
+
+      return html;
+  };
+
+  self.createForm=function(init_func){
+
+    return Form.create();
+
+  };
+  self.createTable=function(){};
+
+
+  //init
+  self.set_theme(FrdUITheme.create());
+
+});
+
+
