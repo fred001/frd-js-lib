@@ -18,9 +18,15 @@ usage
 js file load order:
 
 class.js : basic class object
+
 init.js  : basic object (Frd)
+
 ui.js    : ui basic class object
+
 editor.js : ui editor
+
 form.js  : ui form
+
 dialog.js : ui dialog
+
 tree.js  : ui tree
