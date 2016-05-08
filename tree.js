@@ -1,4 +1,15 @@
-function object_len(o)
+/**
+ * Tree UI
+ *   一个树型JS对象，实现对树状结构的CRUD
+ *   它包含两个部分，Tree2对象和TreeUI2对象
+ *   Tree2可以认为是 Model,保存着真正的树状数据
+ *   TreeUI2 可以认为是 View,负责页面呈现和监听事件
+ *
+ *   生成数据通过 TreeUI2.unserialize(DATA)
+ *   保存数据通过 DATA=TreeUI2.serialize()
+ *
+ */
+function object_len2(o)
 {
    if(o)
    {
@@ -10,7 +21,7 @@ function object_len(o)
    }
 }
 
-function tree_node(id,name)
+function tree_node2(id,name)
 {
    return {
       'parent_id':null,
@@ -21,8 +32,8 @@ function tree_node(id,name)
    };
 }
 
-var Tree=extend(Class,function(self){
-   var root=tree_node(0,"ROOT");
+var Tree2=extend2(Class2,function(self){
+   var root=tree_node2(0,"ROOT");
    self.data=root;
    self.node_index={0:root};
 
@@ -212,8 +223,8 @@ var Tree=extend(Class,function(self){
 });
 
 
-var TreeUI=extend(UI,function(self){
-   self.tree=Tree.create();
+var TreeUI2=extend2(UI2,function(self){
+   self.tree=Tree2.create();
 
    self.html_node=function(node) {
       var html=$('<li data-parent-id="'+node['parent_id']+'" data-id="'+node['id']+'"></li>');
@@ -223,7 +234,7 @@ var TreeUI=extend(UI,function(self){
       html.append(html_node);
       var children=self.html_children(node['children']);
 
-      if(object_len(node['children'])> 0)
+      if(object_len2(node['children'])> 0)
       {
          if(node.open == 0)
          {
@@ -276,7 +287,7 @@ var TreeUI=extend(UI,function(self){
 
    self.onchoosed=function(){};
 
-   self.init=function(){
+   self.bind_events=function(){
       self.html.find("li").on("click",function(){
          self.html.find("li").removeClass("choosed");
          $(this).addClass("choosed");
@@ -312,6 +323,10 @@ var TreeUI=extend(UI,function(self){
 
    };
 
+   self.choose=function(id){
+      self.html.get2(id).click();
+   };
+
    self.get_choosed=function(){
       return self.html.find("li.choosed");
    };
@@ -332,18 +347,18 @@ var TreeUI=extend(UI,function(self){
 
       //alert(parent_id);
 
-      self.tree.insert(parent_id,tree_node(id,name));
+      self.tree.insert(parent_id,tree_node2(id,name));
 
       //console.log(self.html.find("li:first").children("ul"));
 
-      var node=tree_node(id,name);
+      var node=tree_node2(id,name);
       node.parent_id=parent_id;
 
       var html=self.html_node(node);
 
       choosed.children("ul").append(html);
 
-      self.init();
+      self.bind_events();
    };
 
    self.delete=function(){
@@ -374,13 +389,6 @@ var TreeUI=extend(UI,function(self){
             var params={
                'name':form.get2("name").val(),
             };
-
-            /*
-            call_api("account.add",params,function(response){
-            self.close();
-            location.reload();
-            });
-            */
 
             treeui.tree.update(id,{name: form.get2("name").val()});
             choosed.find("span>span:first").text(form.get2("name").val());

@@ -1,18 +1,24 @@
-var FormText=extend(UI,function(self){
+var FormField2=extend2(UI2,function(self){
+
+  self.create_field_html=function(){
+    return '<input  class="form-control field"  type="text" value="" />';
+  };
 
   self.create_html=function(){
     self.html=$('<div class="form-group">'
       +'<label class="col-sm-2 control-label" data-id="label"></label>'
-      +'<div class="col-sm-10">'
-      +'<input class="form-control field"  type="text" value="" />'
+      +'<div data-id="field" class="col-sm-10">'
       +'</div>'
     +'</div>');
 
     self.label=self.html.get2("label");
-    self.field=self.html.find(".field:first");
 
+    var html=self.create_field_html();
+    self.field=$(html);
+    self.html.get2("field").append(self.field)
+
+    //alert(self.html);
     return self.html;
-
   };
 
   self.set_label=function(label){
@@ -47,81 +53,132 @@ var FormText=extend(UI,function(self){
 
 });
 
-function form_text(func,html)
-{
-  return FormText.create();
-}
-
-function form_password()
-{
-  return form_text(function(self){
-    self.set("type","password");
-  });
-
-}
-
-function form_hidden()
-{
-  var FormHidden=extend(FormText,function(self){
-     self.create_html=function(){
-        self.html=$('<div class="form-group">'
-           +'<label class="col-sm-2 control-label" data-id="label"></label>'
-           +'<div class="col-sm-10">'
-           +'<input class="form-control field"  type="hidden" value="" />'
-           +'</div>'
-        +'</div>');
-
-        self.label=self.html.get2("label");
-        self.field=self.html.find(".field:first");
-
-        return self.html;
-
-     };
-  
-  });
-
-  return FormHidden.create();
-}
-
-var FormTextarea=extend(FormText,function(self){
+var FormText2=extend2(FormField2,function(self){
+  self.create_field_html=function(){
+    return '<input class="form-control "  type="text" value="" />';
+  };
+});
+var FormHidden2=extend2(FormField2,function(self){
+  self.create_field_html=function(){
+    return '<input class="form-control "  type="hidden" value="" />';
+  };
 
   self.create_html=function(){
     self.html=$('<div class="form-group">'
-  +'<label class="col-sm-2 control-label" data-id="label"></label>'
-  +'<div class="col-sm-10">'
-  +'<textarea class="form-control field" rows="10"></textarea>'
-  +'</div>'
-  +'</div>');
+      +'<div data-id="field" class="col-sm-10">'
+      +'</div>'
+    +'</div>');
 
-    self.label=self.html.get2("label");
-    self.field=self.html.find(".field:first");
+
+    var html=self.create_field_html();
+    self.field=$(html);
+    self.html.get2("field").append(self.field)
 
     return self.html;
-
   };
 
-    self.set_value=function(value){
-      self.field.val(value);
-    }; 
+  self._label='';
+  self.set_label=function(label){
+     self._label=label;
+  };
+
+  self.set_value=function(value){
+     return self._label;
+  };
+
+
+});
+var FormPassword2=extend2(FormField2,function(self){
+  self.create_field_html=function(){
+    return '<input class="form-control "  type="password" value="" />';
+  };
+});
+
+
+var FormTextarea2=extend2(FormField2,function(self){
+  self.create_field_html=function(){
+
+    return '<textarea class="form-control" rows="10"></textarea>';
+  };
+});
+
+
+var FormSelect2=extend2(FormField2,function(self){
+  self.options={};
+  self.default_option='';
+
+  self.create_field_html=function(){
+    return '<select class="form-control" type="text" value="" />';
+  };
+
+  //self.create_html=function(){
+    //var html='<div class="form-group">'
+    //+'<label class="col-sm-2 control-label" data-id="label"></label>'
+    //+'<div data-id="field" class="col-sm-10">'
+    //+'</div>'
+    //+'</div>';
+
+    //self.html=$(html);
+
+
+    //self.label=self.html.get2("label");
+    //var html=self.create_field_html();
+    //self.field=$(html);
+    //self.html.get2("field").append(self.field)
+
+
+    //for(var k in self.options)
+    //{
+      //if(k == self.default_option)
+      //{
+        //self.field.append('<option selected value="'+k+'">'+self.options[k]+'</option>');
+      //}
+      //else
+      //{
+      //  self.field.append('<option value="'+k+'">'+self.options[k]+'</option>');
+     // }
+    //}
+
+
+    //return self.html;
+
+  //};
+
+
+
+  self.add_option=function(value,label,is_default){
+
+    self.options[value]=label; 
+
+    if(is_default)
+    {
+      option_html='<option selected value="'+value+'">'+label+'</option>';
+    }
+    else
+    {
+      option_html='<option value="'+value+'">'+label+'</option>';
+    }
+
+    self.field.append(option_html);
+
+    return self;
+  };
+
+  self.set_default=function(value){
+    self.default_option=value;
+
+  };
 
 
 });
 
-function form_textarea()
-{
 
-   return FormTextarea.create();
-}
-
-var FormEditor=extend(FormText,function(self){
+var FormEditor2=extend2(FormField2,function(self){
   self.name='';
 
 
   self.create_html=function(){
-    self.editor=Editor.create();
-    self.editor.create_html();
-    self.add_child(self.editor);
-
+    self.editor=Editor2.create();
 
     self.html=$('<div class="form-group">'
       +'<label class="col-sm-2 control-label" data-id="label"></label>'
@@ -135,7 +192,6 @@ var FormEditor=extend(FormText,function(self){
     self.field=self.editor;
 
     return self.html;
-
   };
 
   self.set_name=function(name){
@@ -157,129 +213,76 @@ var FormEditor=extend(FormText,function(self){
 
 });
 
-function form_editor()
-{
-  var editor=FormEditor.create();
-  return editor;
-}
-
-
-function form_selection()
-{
-   var FormSelect=extend(FormText,function(self){
-      self.options={};
-      self.default_option='';
-
-      self.create_html=function(){
-         var html='<div class="form-group">'
-         +'<label class="col-sm-2 control-label" data-id="label"></label>'
-         +'<div class="col-sm-10">'
-         +'<select class="form-control" type="text" value="" />'
-         +'</div>'
-         +'</div>';
-
-         self.html=$(html);
-
-
-         self.label=self.html.get2("label");
-         self.field=self.html.find("select:first");
-
-         for(var k in self.options)
-         {
-            if(k == self.default_option)
-            {
-               self.field.append('<option selected value="'+k+'">'+self.options[k]+'</option>');
-            }
-            else
-            {
-               self.field.append('<option value="'+k+'">'+self.options[k]+'</option>');
-            }
-         }
-
-
-         return self.html;
-
-      };
-
-
-      self.add_option=function(value,label,is_default){
-
-         self.options[value]=label; 
-
-         if(is_default)
-         {
-            option_html='<option selected value="'+value+'">'+label+'</option>';
-         }
-         else
-         {
-            option_html='<option value="'+value+'">'+label+'</option>';
-         }
-
-         self.field.append(option_html);
-
-         return self;
-      };
-
-      self.set_default=function(value){
-         self.default_option=value;
-
-      };
-
-
-   });
-
-   return FormSelect.create();
-}
-
 //var form=Form(); 
 
-var Form=extend(UI,function(self){
+var Form2=extend2(UI2,function(self){
   self.fields={};
 
-  self.add_field=function(name,label,type){
+  //alert(self.__init__);
+  //self.__init__=function() {
+      //alert(self.create_html);
+  //},
+  //alert(self.__init__);
+
+  self.create_html=function(){
+     if(self.html) return self.html;
+
+    var html=$('<form data-id="form" class="form-horizontal">');
+
+    self.html=html;
+    return html;
+  };
+
+  self.add_field=function(type,name,label){
 
     if(type == "select")
     {
-      var field=form_selection();
+      var field=FormSelect2.create();
     }
     else if(type == "text")
     {
-      var field=form_text();
+      var field=FormText2.create();
     }
     else if(type == "password")
     {
-      var field=form_password();
+      var field=FormPassword2.create();
     }
     else if(type == "hidden")
     {
-      var field=form_hidden();
+      var field=FormHidden2.create();
     }
     else if(type == "textarea")
     {
-      var field=form_textarea();
+      var field=FormTextarea2.create();
     }
     else if(type == "editor")
     {
-      var field=form_editor();
+      var field=FormEditor2.create();
     }
     else
     {
       alert('unknown type'+type);
     }
 
-    field.create_html();
-
+    var html=field.get_html();
     field.set_label(label);
     field.set_name(name);
-
     self.fields[name]=field;
 
-    self.add_child(field);
+    self.html.append(html)
+    //self.add_child(field);
 
     return self.get_field(name);
   };
 
   self.get_field=function(name){return self.fields[name];};
+  self.remove_field=function(name){
+    var field=self.fields[name];
+    field.html.remove();
+
+    delete self.fields[name];
+  };
+
   self.get_params=function(){
 
     var params={};
@@ -293,26 +296,37 @@ var Form=extend(UI,function(self){
     return params;
   };
 
-  self.create_html=function(){
-    var html=$('<form data-id="form" class="form-horizontal">');
+  self.set_params=function(params){
 
-    for(var i in self.fields)
+    for(var name in params)
     {
-      //render_ui(html,self.fields[i]);
-      html.append(self.fields[i].get_html());
-      Page.add_init(self.fields[i].init);
+      self.fields[name].set_value(params[name]);
     }
-
-    self.html=html;
-    return html;
 
   };
 
+  self.set_params=function(name,value){
+
+    self.fields[name].set_value(value);
+
+  };
+
+  /*
+  self.add_button=function(name,label,style){
+
+    var html='<button class="btn '+style+'" data-id="'+name+'" type="button">'+label+'</button>';
+
+    self.footer.append(html);
+
+  };
+
+  self.bind_button=function(name,event,callback){
+
+    self.footer.get2(name).bind(event,callback);
+
+  };
+  */
+
 
 });
-
-function form()
-{
-  return Form.create();
-}
 
